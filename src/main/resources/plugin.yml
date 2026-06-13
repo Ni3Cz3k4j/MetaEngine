@@ -1,0 +1,5 @@
+name: MetaEngine
+version: '1.0.0'
+main: me.ni3cz3k4j.metaEngine.MetaEngine
+api-version: '1.21'
+authors: [ ni3cz3k4j ]
