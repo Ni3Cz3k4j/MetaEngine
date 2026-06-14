@@ -5,12 +5,17 @@ import me.ni3cz3k4j.metaEngine.addon.MetaAddonContext;
 import me.ni3cz3k4j.metaEngine.command.MetaCommand;
 import me.ni3cz3k4j.metaEngine.item.MetaItemManager;
 import me.ni3cz3k4j.metaEngine.item.MetaItemRegistry;
+import me.ni3cz3k4j.metaEngine.item.settings.MetaItemSettings;
 import me.ni3cz3k4j.metaEngine.listener.MetaItemListener;
 import me.ni3cz3k4j.metaEngine.registry.MetaRegistries;
+import me.ni3cz3k4j.metaEngine.resourcepack.MetaGeneratedResourcePack;
+import me.ni3cz3k4j.metaEngine.resourcepack.MetaResourcePackGenerator;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class MetaEngine extends JavaPlugin {
@@ -27,10 +32,27 @@ public final class MetaEngine extends JavaPlugin {
     @Override
     public void onEnable() {
         this.itemManager = new MetaItemManager(this, registries);
+        registerTestItem();
         registries.freezeAll();
+
+        try {
+            MetaResourcePackGenerator generator = new MetaResourcePackGenerator(this, registries, List.of());
+
+            MetaGeneratedResourcePack pack = generator.generateZip();
+            getLogger().info("Generated rp: " + pack.zip() + ".");
+        } catch (IOException exception) {
+            getLogger().severe("Failed to generate rp: " + exception.getMessage());
+            exception.printStackTrace();
+        }
 
         getServer().getPluginManager().registerEvents(new MetaItemListener(itemManager), this);
         getCommand("meta").setExecutor(new MetaCommand(itemManager));
+    }
+
+    private void registerTestItem() {
+        MetaItemRegistry items = new MetaItemRegistry("test", registries().items());
+
+        items.register("fire_wand", Material.STICK, new MetaItemSettings().name("&cFire Wand").modelTexture("fire_wand"), ((player, itemStack) -> player.sendMessage("Whoosh!")));
     }
 
     public MetaAddonContext initAddon(JavaPlugin addonPlugin, String metaId) {

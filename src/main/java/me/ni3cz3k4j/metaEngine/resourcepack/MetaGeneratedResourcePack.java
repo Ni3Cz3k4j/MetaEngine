@@ -1,4 +1,5 @@
 package me.ni3cz3k4j.metaEngine.resourcepack;
 
-public record MetaGeneratedResourcePack() {
-}
+import java.nio.file.Path;
+
+public record MetaGeneratedResourcePack(Path directory, Path zip, byte[] sha1) {}
