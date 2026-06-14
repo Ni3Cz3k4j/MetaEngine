@@ -98,8 +98,13 @@ public final class MetaItemSettings {
         return this;
     }
 
-    public MetaItemSettings model(String modelId) {
-        this.model = new MetaModelSettings(modelId);
+    public MetaItemSettings modelTexture(String path) {
+        this.model = MetaModelSettings.texture(path);
+        return this;
+    }
+
+    public MetaItemSettings customModel(String path) {
+        this.model = MetaModelSettings.customModel(path);
         return this;
     }
 

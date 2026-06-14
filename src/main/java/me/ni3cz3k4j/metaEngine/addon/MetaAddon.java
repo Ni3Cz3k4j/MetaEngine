@@ -1,4 +1,5 @@
 package me.ni3cz3k4j.metaEngine.addon;
 
-public class MetaAddon {
-}
+import org.bukkit.plugin.java.JavaPlugin;
+
+public record MetaAddon(JavaPlugin plugin, String metaId) {}
