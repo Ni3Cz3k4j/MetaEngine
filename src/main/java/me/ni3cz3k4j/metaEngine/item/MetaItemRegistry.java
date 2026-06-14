@@ -1,5 +1,6 @@
 package me.ni3cz3k4j.metaEngine.item;
 
+import me.ni3cz3k4j.metaEngine.item.settings.MetaItemSettings;
 import me.ni3cz3k4j.metaEngine.registry.MetaKey;
 import me.ni3cz3k4j.metaEngine.registry.MetaRegistry;
 import org.bukkit.Material;
@@ -13,9 +14,9 @@ public final class MetaItemRegistry {
         this.registry = registry;
     }
 
-    public MetaItem register(String path, Material material, String displayName, MetaItemUseHandler useHandler) {
+    public MetaItem register(String path, Material material, MetaItemSettings settings, MetaItemUseHandler useHandler) {
         MetaKey key = MetaKey.of(namespace, path);
-        MetaItem item = new MetaItem(key, material, displayName, useHandler);
+        MetaItem item = new MetaItem(key, material, settings, useHandler);
         registry.register(key, item);
         return item;
     }
