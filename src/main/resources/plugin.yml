@@ -3,3 +3,8 @@ version: '1.0.0'
 main: me.ni3cz3k4j.metaEngine.MetaEngine
 api-version: '1.21'
 authors: [ ni3cz3k4j ]
+commands:
+  meta:
+    permission: metaengine.command.meta
+    usage: /meta give <item_key> <player> <amount>
+    description: Main Meta Engine command for managing things

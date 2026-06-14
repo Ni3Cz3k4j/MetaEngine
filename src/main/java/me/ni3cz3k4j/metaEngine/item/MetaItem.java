@@ -18,6 +18,10 @@ public final class MetaItem {
         this.useHandler = useHandler;
     }
 
+    public static MetaItem of(MetaKey key, Material material, String displayName, MetaItemUseHandler useHandler) {
+        return new MetaItem(key, material, displayName, useHandler);
+    }
+
     public MetaKey key() {
         return key;
     }
