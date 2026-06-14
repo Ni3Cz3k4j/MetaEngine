@@ -29,9 +29,7 @@ public final class MetaResourcePackGenerator {
     }
 
     public Path generate() throws IOException {
-        Path root = plugin.getDataFolder()
-                .toPath()
-                .resolve("generated-resourcepack");
+        Path root = plugin.getDataFolder().toPath().resolve("generated-resourcepack");
 
         deleteDirectory(root);
         Files.createDirectories(root);

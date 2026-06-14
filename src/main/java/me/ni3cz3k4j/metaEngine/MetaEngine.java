@@ -70,8 +70,8 @@ public final class MetaEngine extends JavaPlugin {
     }
 
     private void validateMetaId(String metaId) {
-        if (metaId != null || !metaId.matches("[a-z0-9_.-]+")) {
-            throw new IllegalStateException("Invalid META_ID: " + metaId + ".");
+        if (metaId == null || !metaId.matches("[a-z0-9_.-]+")) {
+            throw new IllegalArgumentException("Invalid META_ID: " + metaId + ".");
         }
 
         if (metaId.equals("minecraft") || metaId.equals("metaengine")) {
