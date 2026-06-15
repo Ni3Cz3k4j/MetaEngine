@@ -3,6 +3,7 @@ package me.ni3cz3k4j.metaEngine;
 import me.ni3cz3k4j.metaEngine.addon.MetaAddon;
 import me.ni3cz3k4j.metaEngine.addon.MetaAddonContext;
 import me.ni3cz3k4j.metaEngine.command.MetaCommand;
+import me.ni3cz3k4j.metaEngine.command.tab.MetaTabCompleter;
 import me.ni3cz3k4j.metaEngine.item.MetaItemManager;
 import me.ni3cz3k4j.metaEngine.item.listener.MetaDeathProtectionListener;
 import me.ni3cz3k4j.metaEngine.item.listener.MetaItemListener;
@@ -47,6 +48,7 @@ public final class MetaEngine extends JavaPlugin {
 
         if (getCommand("meta") != null) {
             getCommand("meta").setExecutor(new MetaCommand(itemManager));
+            getCommand("meta").setTabCompleter(new MetaTabCompleter(registries));
         }
     }
 
