@@ -1,6 +1,7 @@
-package me.ni3cz3k4j.metaEngine.item.settings;
+package me.ni3cz3k4j.metaEngine.item.component;
 
-public enum MetaConsumeAnimation {
+public enum MetaUseAnimation {
+    NONE,
     EAT,
     DRINK,
     BLOCK,

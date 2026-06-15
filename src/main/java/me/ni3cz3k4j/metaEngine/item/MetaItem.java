@@ -1,6 +1,7 @@
 package me.ni3cz3k4j.metaEngine.item;
 
-import me.ni3cz3k4j.metaEngine.item.settings.MetaItemSettings;
+import me.ni3cz3k4j.metaEngine.item.behavior.MetaItemBehaviorContainer;
+import me.ni3cz3k4j.metaEngine.item.component.MetaItemComponentContainer;
 import me.ni3cz3k4j.metaEngine.registry.MetaKey;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -9,14 +10,14 @@ import org.bukkit.inventory.ItemStack;
 public final class MetaItem {
     private final MetaKey key;
     private final Material material;
-    private final MetaItemSettings settings;
-    private final MetaItemUseHandler useHandler;
+    private final MetaItemComponentContainer components;
+    private final MetaItemBehaviorContainer behaviors;
 
-    public MetaItem(MetaKey key, Material material, MetaItemSettings settings, MetaItemUseHandler useHandler) {
+    public MetaItem(MetaKey key, Material material, MetaItemComponentContainer components, MetaItemBehaviorContainer behaviors) {
         this.key = key;
         this.material = material;
-        this.settings = settings;
-        this.useHandler = useHandler;
+        this.components = components;
+        this.behaviors = behaviors;
     }
 
     public MetaKey key() {
@@ -27,13 +28,11 @@ public final class MetaItem {
         return material;
     }
 
-    public MetaItemSettings settings() {
-        return settings;
+    public MetaItemComponentContainer components() {
+        return components;
     }
 
-    public void onUse(Player player, ItemStack itemStack) {
-        if (useHandler != null) {
-            useHandler.use(player, itemStack);
-        }
+    public MetaItemBehaviorContainer behaviors() {
+        return behaviors;
     }
 }
