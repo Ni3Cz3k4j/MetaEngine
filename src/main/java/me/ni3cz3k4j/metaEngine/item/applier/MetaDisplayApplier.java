@@ -15,13 +15,7 @@ public final class MetaDisplayApplier implements MetaItemApplier<MetaDisplayComp
     }
 
     @Override
-    public void apply(
-            MetaItem item,
-            MetaDisplayComponent component,
-            ItemStack stack,
-            ItemMeta meta,
-            MetaItemApplyContext context
-    ) {
+    public void apply(MetaItem item, MetaDisplayComponent component, ItemStack stack, ItemMeta meta, MetaItemApplyContext context) {
         if (component.itemName() != null) {
             meta.setItemName(MetaText.color(component.itemName()));
         }

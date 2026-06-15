@@ -17,30 +17,27 @@ public final class MetaCooldownApplier implements MetaItemApplier<MetaCooldownCo
     }
 
     @Override
-    public void apply(
-            MetaItem item,
-            MetaCooldownComponent component,
-            ItemStack stack,
-            ItemMeta meta,
-            MetaItemApplyContext context
-    ) {
-        UseCooldownComponent cooldown = meta.getUseCooldown();
-
-        cooldown.setCooldownSeconds(component.seconds());
-
-        String group = component.group();
-        NamespacedKey groupKey;
-
-        if (group == null || group.equals("self")) {
-            groupKey = new NamespacedKey(item.key().namespace(), item.key().path());
-        } else if (group.contains(":")) {
-            MetaKey parsed = MetaKey.parse(group);
-            groupKey = new NamespacedKey(parsed.namespace(), parsed.path());
-        } else {
-            groupKey = new NamespacedKey(item.key().namespace(), group);
+    public void apply(MetaItem item, MetaCooldownComponent component, ItemStack stack, ItemMeta meta, MetaItemApplyContext context) {
+        if (component.seconds() <= 0.0f) {
+            return;
         }
 
-        cooldown.setCooldownGroup(groupKey);
+        UseCooldownComponent cooldown = meta.getUseCooldown();
+        cooldown.setCooldownSeconds(component.seconds());
+        cooldown.setCooldownGroup(groupKey(item, component.group()));
         meta.setUseCooldown(cooldown);
+    }
+
+    private NamespacedKey groupKey(MetaItem item, String group) {
+        if (group == null || group.isBlank() || group.equalsIgnoreCase("self")) {
+            return new NamespacedKey(item.key().namespace(), item.key().path());
+        }
+
+        if (group.contains(":")) {
+            MetaKey parsed = MetaKey.parse(group);
+            return new NamespacedKey(parsed.namespace(), parsed.path());
+        }
+
+        return new NamespacedKey(item.key().namespace(), group);
     }
 }

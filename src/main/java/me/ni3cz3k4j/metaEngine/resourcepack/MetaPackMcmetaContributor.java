@@ -15,10 +15,10 @@ public final class MetaPackMcmetaContributor implements MetaResourcePackContribu
         Files.writeString(file, """
                 {
                   "pack": {
-                    "pack_format": 94.1,
+                    "pack_format": 75,
                     "description": "MetaEngine generated resource pack"
                   }
                 }
-                """, StandardCharsets.UTF_8); // https://minecraft.wiki/w/Pack_format: 1.21.11 -> 94.1
+                """, StandardCharsets.UTF_8); // https://minecraft.wiki/w/Pack_format: 1.21.11 -> 94.1 ale dla datapackow, nie wazne juz
     }
 }

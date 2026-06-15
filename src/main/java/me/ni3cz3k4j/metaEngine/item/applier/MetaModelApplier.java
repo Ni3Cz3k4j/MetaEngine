@@ -25,24 +25,55 @@ public final class MetaModelApplier implements MetaItemApplier<MetaModelComponen
             return;
         }
 
-        String modelPath = component.modelPath();
-
-        if (modelPath == null || modelPath.isBlank()) {
-            modelPath = "item/" + item.key().path();
+        if (component.mode() == MetaModelMode.VANILLA_MODEL) {
+            return;
         }
 
-        NamespacedKey modelKey;
+        String itemModelPath = itemModelPath(item, component);
 
-        if (modelPath.contains(":")) {
-            modelKey = NamespacedKey.fromString(modelPath);
-        } else if (component.mode() == MetaModelMode.VANILLA_MODEL) {
-            modelKey = NamespacedKey.minecraft(modelPath);
-        } else {
-            modelKey = new NamespacedKey(item.key().namespace(), modelPath);
+        NamespacedKey itemModelKey = new NamespacedKey(
+                item.key().namespace(),
+                itemModelPath
+        );
+
+        meta.setItemModel(itemModelKey);
+    }
+
+    private String itemModelPath(MetaItem item, MetaModelComponent component) {
+        String modelId = component.modelId();
+
+        if (modelId == null || modelId.isBlank()) {
+            modelId = item.key().path();
         }
 
-        if (modelKey != null) {
-            meta.setItemModel(modelKey);
+        modelId = normalize(modelId);
+
+        if (modelId.startsWith("item/")) {
+            modelId = modelId.substring("item/".length());
         }
+
+        return modelId;
+    }
+
+    private String normalize(String path) {
+        String normalized = path.replace("\\", "/");
+
+        while (normalized.startsWith("/")) {
+            normalized = normalized.substring(1);
+        }
+
+        if (normalized.endsWith(".json")) {
+            normalized = normalized.substring(0, normalized.length() - ".json".length());
+        }
+
+        if (normalized.endsWith(".png")) {
+            normalized = normalized.substring(0, normalized.length() - ".png".length());
+        }
+
+        if (normalized.contains(":")) {
+            normalized = normalized.substring(normalized.indexOf(':') + 1);
+        }
+
+        return normalized;
     }
 }
