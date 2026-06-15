@@ -11,6 +11,10 @@ import java.util.List;
 public final class MetaItemApplierRegistry {
     private final List<MetaItemApplier<?>> appliers = new ArrayList<>();
 
+    public MetaItemApplierRegistry() {
+        registerDefaults();
+    }
+
     public void registerDefaults() {
         register(new MetaDisplayApplier());
         register(new MetaModelApplier());
@@ -22,7 +26,6 @@ public final class MetaItemApplierRegistry {
         register(new MetaTooltipApplier());
         register(new MetaCooldownApplier());
         register(new MetaUseApplier());
-        register(new MetaFoodApplier());
         register(new MetaConsumableApplier());
         register(new MetaUseRemainderApplier());
         register(new MetaToolApplier());

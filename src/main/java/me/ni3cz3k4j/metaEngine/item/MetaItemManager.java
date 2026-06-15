@@ -1,18 +1,10 @@
 package me.ni3cz3k4j.metaEngine.item;
 
-import me.ni3cz3k4j.metaEngine.item.settings.MetaConsumeAnimation;
-import me.ni3cz3k4j.metaEngine.item.settings.MetaItemSettings;
 import me.ni3cz3k4j.metaEngine.registry.MetaKey;
 import me.ni3cz3k4j.metaEngine.registry.MetaRegistries;
-import me.ni3cz3k4j.metaEngine.text.MetaText;
-import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.components.CustomModelDataComponent;
-import org.bukkit.inventory.meta.components.FoodComponent;
-import org.bukkit.inventory.meta.components.UseCooldownComponent;
-import org.bukkit.inventory.meta.components.consumable.ConsumableComponent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 

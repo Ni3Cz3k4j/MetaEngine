@@ -4,9 +4,13 @@ import me.ni3cz3k4j.metaEngine.item.MetaItem;
 import me.ni3cz3k4j.metaEngine.item.MetaItemApplier;
 import me.ni3cz3k4j.metaEngine.item.MetaItemApplyContext;
 import me.ni3cz3k4j.metaEngine.item.component.MetaCustomModelDataComponent;
+import org.bukkit.Color;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.CustomModelDataComponent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class MetaCustomModelDataApplier implements MetaItemApplier<MetaCustomModelDataComponent> {
     @Override
@@ -15,31 +19,42 @@ public final class MetaCustomModelDataApplier implements MetaItemApplier<MetaCus
     }
 
     @Override
-    public void apply(
-            MetaItem item,
-            MetaCustomModelDataComponent component,
-            ItemStack stack,
-            ItemMeta meta,
-            MetaItemApplyContext context
-    ) {
-        CustomModelDataComponent modelData = meta.getCustomModelDataComponent();
+    public void apply(MetaItem item, MetaCustomModelDataComponent component, ItemStack stack, ItemMeta meta, MetaItemApplyContext context) {
+        CustomModelDataComponent customModelData = meta.getCustomModelDataComponent();
 
-        if (component.strings() != null) {
-            modelData.setStrings(component.strings());
+        List<String> strings = new ArrayList<>();
+        for (Object value : component.strings()) {
+            if (value instanceof String string) {
+                strings.add(string);
+            }
         }
 
-        if (component.floats() != null) {
-            modelData.setFloats(component.floats());
+        List<Float> floats = new ArrayList<>();
+        for (Object value : component.floats()) {
+            if (value instanceof Number number) {
+                floats.add(number.floatValue());
+            }
         }
 
-        if (component.flags() != null) {
-            modelData.setFlags(component.flags());
+        List<Boolean> flags = new ArrayList<>();
+        for (Object value : component.flags()) {
+            if (value instanceof Boolean flag) {
+                flags.add(flag);
+            }
         }
 
-        if (component.colors() != null) {
-            modelData.setColors(component.colors());
+        List<Color> colors = new ArrayList<>();
+        for (Object value : component.colors()) {
+            if (value instanceof Color color) {
+                colors.add(color);
+            }
         }
 
-        meta.setCustomModelDataComponent(modelData);
+        customModelData.setStrings(strings);
+        customModelData.setFloats(floats);
+        customModelData.setFlags(flags);
+        customModelData.setColors(colors);
+
+        meta.setCustomModelDataComponent(customModelData);
     }
 }

@@ -1,7 +1,8 @@
 package me.ni3cz3k4j.metaEngine.resourcepack;
 
 import me.ni3cz3k4j.metaEngine.item.MetaItem;
-import me.ni3cz3k4j.metaEngine.item.settings.MetaModelSettings;
+import me.ni3cz3k4j.metaEngine.item.component.MetaModelComponent;
+import me.ni3cz3k4j.metaEngine.item.component.MetaModelMode;
 import org.bukkit.Material;
 
 import java.io.IOException;
@@ -23,11 +24,13 @@ public final class MetaItemResourceContributor implements MetaResourcePackContri
         }
 
         for (MetaItem item : context.registries().items().values()) {
-            if (item.settings().model() == null) {
+            MetaModelComponent model = model(item);
+
+            if (model == null) {
                 continue;
             }
 
-            generateModelIfNeeded(context.root(), item);
+            generateModelIfNeeded(context.root(), item, model);
         }
     }
 
@@ -35,11 +38,23 @@ public final class MetaItemResourceContributor implements MetaResourcePackContri
         Map<Material, List<MetaItem>> result = new LinkedHashMap<>();
 
         for (MetaItem item : context.registries().items().values()) {
-            if (item.settings().model() == null) {
+            MetaModelComponent model = model(item);
+
+            if (model == null) {
                 continue;
             }
 
-            result.computeIfAbsent(item.material(), ignored -> new ArrayList<>()).add(item);
+            if (model.mode() == MetaModelMode.RAW_ITEM_DEFINITION) {
+                continue;
+            }
+
+            Material material = item.material();
+
+            if (material == null || material.isAir()) {
+                continue;
+            }
+
+            result.computeIfAbsent(material, ignored -> new ArrayList<>()).add(item);
         }
 
         return result;
@@ -52,9 +67,14 @@ public final class MetaItemResourceContributor implements MetaResourcePackContri
 
         for (int index = 0; index < items.size(); index++) {
             MetaItem item = items.get(index);
-            MetaModelSettings model = item.settings().model();
-            String customModelDataValue = model.modelId();
-            String modelPath = item.key().namespace() + ":" + model.modelPath();
+            MetaModelComponent model = model(item);
+
+            if (model == null) {
+                continue;
+            }
+
+            String customModelDataValue = modelId(item, model);
+            String modelPath = itemModelPath(item, model);
 
             cases.append("""
                     {
@@ -93,14 +113,14 @@ public final class MetaItemResourceContributor implements MetaResourcePackContri
         write(file, json);
     }
 
-    private void generateModelIfNeeded(Path root, MetaItem item) throws IOException {
-        MetaModelSettings model = item.settings().model();
-
-        if (!model.generateModel()) {
+    private void generateModelIfNeeded(Path root, MetaItem item, MetaModelComponent model) throws IOException {
+        if (model.mode() != MetaModelMode.GENERATED_TEXTURE) {
             return;
         }
 
         String namespace = item.key().namespace();
+        String texturePath = texturePath(item, model);
+        String modelPath = modelPath(item, model);
 
         String modelJson = """
                 {
@@ -109,10 +129,86 @@ public final class MetaItemResourceContributor implements MetaResourcePackContri
                     "layer0": "%s:%s"
                   }
                 }
-                """.formatted(escape(namespace), escape(model.texturePath()));
+                """.formatted(escape(namespace), escape(texturePath));
 
-        Path modelFile = root.resolve("assets/" + namespace + "/models/" + model.modelPath() + ".json");
+        Path modelFile = root.resolve("assets/" + namespace + "/models/" + modelPath + ".json");
         write(modelFile, modelJson);
+    }
+
+    private MetaModelComponent model(MetaItem item) {
+        return item.components()
+                .get(MetaModelComponent.class)
+                .orElse(null);
+    }
+
+    private String modelId(MetaItem item, MetaModelComponent model) {
+        if (model.modelId() != null && !model.modelId().isBlank()) {
+            return model.modelId();
+        }
+
+        return item.key().path();
+    }
+
+    private String texturePath(MetaItem item, MetaModelComponent model) {
+        if (model.texturePath() != null && !model.texturePath().isBlank()) {
+            return normalizeResourcePath(model.texturePath());
+        }
+
+        return "item/" + item.key().path();
+    }
+
+    private String modelPath(MetaItem item, MetaModelComponent model) {
+        if (model.modelPath() != null && !model.modelPath().isBlank()) {
+            return normalizeResourcePath(model.modelPath());
+        }
+
+        return "item/" + item.key().path();
+    }
+
+    private String itemModelPath(MetaItem item, MetaModelComponent model) {
+        if (model.mode() == MetaModelMode.VANILLA_MODEL) {
+            String raw = model.modelPath();
+
+            if (raw == null || raw.isBlank()) {
+                return "minecraft:item/" + item.material().getKey().getKey();
+            }
+
+            if (raw.contains(":")) {
+                return raw;
+            }
+
+            if (raw.startsWith("item/") || raw.startsWith("block/")) {
+                return "minecraft:" + raw;
+            }
+
+            return "minecraft:item/" + raw;
+        }
+
+        String raw = modelPath(item, model);
+
+        if (raw.contains(":")) {
+            return raw;
+        }
+
+        return item.key().namespace() + ":" + raw;
+    }
+
+    private String normalizeResourcePath(String path) {
+        String normalized = path.replace("\\", "/");
+
+        while (normalized.startsWith("/")) {
+            normalized = normalized.substring(1);
+        }
+
+        if (normalized.endsWith(".json")) {
+            normalized = normalized.substring(0, normalized.length() - ".json".length());
+        }
+
+        if (normalized.endsWith(".png")) {
+            normalized = normalized.substring(0, normalized.length() - ".png".length());
+        }
+
+        return normalized;
     }
 
     private void write(Path path, String content) throws IOException {

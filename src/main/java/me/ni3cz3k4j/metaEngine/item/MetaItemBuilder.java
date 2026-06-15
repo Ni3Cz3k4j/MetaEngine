@@ -1,5 +1,7 @@
 package me.ni3cz3k4j.metaEngine.item;
 
+import me.ni3cz3k4j.metaEngine.item.behavior.MetaItemBehaviorContainer;
+import me.ni3cz3k4j.metaEngine.item.builder.*;
 import me.ni3cz3k4j.metaEngine.item.component.*;
 import me.ni3cz3k4j.metaEngine.registry.MetaKey;
 import org.bukkit.Material;
@@ -9,7 +11,6 @@ import java.util.function.Consumer;
 public final class MetaItemBuilder {
     private final MetaKey key;
     private Material baseMaterial = Material.STICK;
-
     private final MetaItemComponentContainer components = new MetaItemComponentContainer();
     private final MetaItemBehaviorContainer behaviors = new MetaItemBehaviorContainer();
 
