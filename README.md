@@ -1,2 +1,2 @@
 # About MetaEngine
-Met
+MetaEngine is api for building custom addons on Paper servers. It helps plugin developers register custom stuff and resourcepack assets without rewriting the same systems every time. The goal is to make Paper plugin development feel more like a small modding platform. Future plans include custom recipes, better resourcepack tools, translations, more item events, addon helpers and support for more custom content beyond items.
