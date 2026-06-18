@@ -3,12 +3,10 @@ package me.ni3cz3k4j.metaEngine.item.listener;
 import me.ni3cz3k4j.metaEngine.item.MetaItem;
 import me.ni3cz3k4j.metaEngine.item.MetaItemManager;
 import me.ni3cz3k4j.metaEngine.item.event.*;
-import me.ni3cz3k4j.metaEngine.item.runtime.MetaItemCooldowns;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
@@ -47,7 +45,8 @@ public final class MetaItemListener implements Listener {
                 item,
                 stack,
                 event.getAction(),
-                event.getHand()
+                event.getHand(),
+                itemManager.cooldowns()
         );
 
         dispatcher.dispatchUse(item, useEvent);
@@ -129,10 +128,7 @@ public final class MetaItemListener implements Listener {
 
         if (metaEvent.isCancelled()) {
             event.setCancelled(true);
-            return;
         }
-
-        MetaItemCooldowns.applyCooldown(event.getPlayer(), item, stack);
     }
 
     @EventHandler
@@ -234,7 +230,6 @@ public final class MetaItemListener implements Listener {
         }
 
         Recipe recipe = event.getRecipe();
-        boolean containsMetaItem = false;
 
         for (ItemStack stack : event.getInventory().getMatrix()) {
             Optional<MetaItem> optionalItem = itemManager.identify(stack);
@@ -242,8 +237,6 @@ public final class MetaItemListener implements Listener {
             if (optionalItem.isEmpty()) {
                 continue;
             }
-
-            containsMetaItem = true;
 
             MetaItem item = optionalItem.get();
 
@@ -256,14 +249,8 @@ public final class MetaItemListener implements Listener {
 
             dispatcher.dispatchCraftPrepare(item, metaEvent);
 
-            if (metaEvent.isCancelled()) {
-                event.getInventory().setResult(null);
-                return;
-            }
-        }
-
-        if (containsMetaItem) {
             event.getInventory().setResult(null);
+            return;
         }
     }
 
@@ -274,7 +261,6 @@ public final class MetaItemListener implements Listener {
         }
 
         Recipe recipe = event.getRecipe();
-        boolean containsMetaItem = false;
 
         for (ItemStack stack : event.getInventory().getMatrix()) {
             Optional<MetaItem> optionalItem = itemManager.identify(stack);
@@ -282,8 +268,6 @@ public final class MetaItemListener implements Listener {
             if (optionalItem.isEmpty()) {
                 continue;
             }
-
-            containsMetaItem = true;
 
             MetaItem item = optionalItem.get();
 
@@ -296,18 +280,8 @@ public final class MetaItemListener implements Listener {
 
             dispatcher.dispatchCraft(item, metaEvent);
 
-            if (metaEvent.isCancelled()) {
-                event.setCancelled(true);
-                return;
-            }
-        }
-
-        if (containsMetaItem) {
             event.setCancelled(true);
+            return;
         }
-    }
-
-    private boolean isUseAction(Action action) {
-        return action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK;
     }
 }

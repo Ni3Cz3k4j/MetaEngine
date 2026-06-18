@@ -10,14 +10,15 @@ import org.bukkit.inventory.ItemStack;
 
 public final class MetaItemUseEvent extends MetaCancellableItemEvent {
     private static final HandlerList HANDLERS = new HandlerList();
-
     private final Action action;
     private final EquipmentSlot hand;
+    private final MetaItemCooldowns cooldowns;
 
-    public MetaItemUseEvent(Player player, MetaItem item, ItemStack itemStack, Action action, EquipmentSlot hand) {
+    public MetaItemUseEvent(Player player, MetaItem item, ItemStack itemStack, Action action, EquipmentSlot hand, MetaItemCooldowns cooldowns) {
         super(player, item, itemStack);
         this.action = action;
         this.hand = hand;
+        this.cooldowns = cooldowns;
     }
 
     public Action action() {
@@ -37,15 +38,47 @@ public final class MetaItemUseEvent extends MetaCancellableItemEvent {
     }
 
     public boolean hasCooldown() {
-        return MetaItemCooldowns.hasCooldown(player(), item(), itemStack());
+        return cooldowns.hasCooldown(player(), item(), itemStack());
+    }
+
+    public boolean hasCooldown(String group) {
+        return cooldowns.hasCooldown(player(), group);
     }
 
     public void cooldown() {
-        MetaItemCooldowns.applyCooldown(player(), item(), itemStack());
+        cooldowns.cooldown(player(), item(), itemStack());
     }
 
     public void cooldown(float seconds) {
-        MetaItemCooldowns.applyCooldown(player(), item(), itemStack(), seconds);
+        cooldowns.cooldown(player(), item(), itemStack(), seconds);
+    }
+
+    public void cooldownGroup(String group, float seconds) {
+        cooldowns.cooldownGroup(player(), group, seconds);
+    }
+
+    public float remainingCooldownSeconds() {
+        return cooldowns.remainingSeconds(player(), item());
+    }
+
+    public float remainingCooldownSeconds(String group) {
+        return cooldowns.remainingSeconds(player(), group);
+    }
+
+    public int remainingCooldownTicks() {
+        return cooldowns.remainingTicks(player(), item());
+    }
+
+    public int remainingCooldownTicks(String group) {
+        return cooldowns.remainingTicks(player(), group);
+    }
+
+    public void clearCooldown() {
+        cooldowns.clear(player(), item());
+    }
+
+    public void clearCooldown(String group) {
+        cooldowns.clear(player(), group);
     }
 
     @Override

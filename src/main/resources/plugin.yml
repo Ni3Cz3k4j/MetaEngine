@@ -6,5 +6,10 @@ authors: [ ni3cz3k4j ]
 commands:
   meta:
     permission: metaengine.command.meta
-    usage: /meta give <item_key> <player> <amount>
+    usage: /meta
     description: Main Meta Engine command for managing things
+
+permissions:
+  metaengine.command.meta:
+    description: Allow using /meta
+    default: op

@@ -22,7 +22,7 @@ public final class MetaTabCompleter implements TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
-            return filter(List.of("give"), args[0]);
+            return filter(List.of("give", "id", "identify", "list", "reloadpack"), args[0]);
         }
 
         if (args.length >= 2 && args[0].equalsIgnoreCase("give")) {
